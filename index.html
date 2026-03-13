@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuildCore — Sistema de Gestión para Constructoras</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0a0a; --bg2:#111; --bg3:#181818;
+  --border:#222; --accent:#f5a623;
+  --text:#f0ede8; --muted:#555; --muted2:#888; --green:#22c55e;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(10,10,10,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;}
+.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{color:var(--muted2);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{display:flex;gap:10px;align-items:center;}
+.btn-ng{padding:9px 20px;border:1px solid var(--border);background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border-radius:6px;transition:all .2s;text-decoration:none;}
+.btn-ng:hover{border-color:var(--accent);color:var(--accent);}
+.btn-ns{padding:9px 20px;background:var(--accent);color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:none;border-radius:6px;transition:all .2s;text-decoration:none;}
+.btn-ns:hover{background:#e8951f;}
+
+/* HERO */
+.hero{min-height:100vh;position:relative;display:flex;align-items:flex-end;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background-image:url('img-hero.jpg');background-size:cover;background-position:center 40%;filter:brightness(.3);}
+.hero-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,1) 0%,rgba(10,10,10,.55) 45%,rgba(10,10,10,.05) 100%);}
+.hero-c{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:0 48px 90px;width:100%;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.4);border-radius:100px;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;animation:fadeUp .6s ease both;}
+.hero-badge b{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;}
+.hero-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,10vw,130px);line-height:.92;letter-spacing:2px;margin-bottom:22px;animation:fadeUp .6s .1s ease both;}
+.hero-h1 .o{color:var(--accent);}
+.hero-p{font-size:18px;color:#bbb;line-height:1.7;font-weight:300;max-width:560px;margin-bottom:38px;animation:fadeUp .6s .2s ease both;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;animation:fadeUp .6s .3s ease both;}
+.btn-h{padding:16px 38px;background:var(--accent);color:#000;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;border:none;border-radius:8px;cursor:pointer;text-decoration:none;transition:all .25s;}
+.btn-h:hover{background:#e8951f;transform:translateY(-2px);box-shadow:0 8px 30px rgba(245,166,35,.3);}
+.btn-hg{padding:16px 38px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;border:1px solid rgba(255,255,255,.2);border-radius:8px;cursor:pointer;text-decoration:none;transition:all .25s;}
+.btn-hg:hover{border-color:rgba(255,255,255,.5);transform:translateY(-2px);}
+
+/* MARQUEE */
+.mq{overflow:hidden;background:var(--accent);padding:13px 0;}
+.mq-t{display:flex;gap:40px;animation:marquee 22s linear infinite;width:max-content;white-space:nowrap;}
+.mq-i{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:#000;display:flex;align-items:center;gap:16px;}
+.mq-i::after{content:'◆';font-size:8px;opacity:.4;}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--bg2);border-bottom:1px solid var(--border);}
+.stat{padding:34px 20px;text-align:center;border-right:1px solid var(--border);}
+.stat:last-child{border-right:none;}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:50px;color:var(--accent);line-height:1;}
+.stat-l{font-size:12px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;}
+
+/* PASOS */
+.pasos-section{padding:100px 48px;}
+.pasos-inner{max-width:1200px;margin:0 auto;}
+.stag{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.stit{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5vw,62px);line-height:1;margin-bottom:12px;}
+.ssub{font-size:15px;color:var(--muted2);line-height:1.7;font-weight:300;max-width:480px;margin-bottom:56px;}
+.pasos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.paso{background:var(--bg2);padding:44px 36px;position:relative;transition:background .3s;}
+.paso:hover{background:var(--bg3);}
+.paso-n{font-family:'Bebas Neue',sans-serif;font-size:80px;color:rgba(245,166,35,.08);line-height:1;position:absolute;top:12px;right:20px;}
+.paso-ic{font-size:38px;margin-bottom:20px;}
+.paso-t{font-size:17px;font-weight:600;margin-bottom:10px;}
+.paso-d{font-size:14px;color:var(--muted2);line-height:1.7;font-weight:300;}
+
+/* MÓDULOS */
+.mods-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:100px 48px;}
+.mods-inner{max-width:1200px;margin:0 auto;}
+.mod-row{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;margin-bottom:90px;}
+.mod-row:last-child{margin-bottom:0;}
+.mod-row.rev{direction:rtl;}
+.mod-row.rev>*{direction:ltr;}
+.mod-img{border-radius:14px;overflow:hidden;position:relative;aspect-ratio:16/10;border:1px solid var(--border);}
+.mod-img img{width:100%;height:100%;object-fit:cover;filter:brightness(.75);transition:filter .4s;}
+.mod-img:hover img{filter:brightness(1);}
+.mod-img-ov{position:absolute;inset:0;background:linear-gradient(135deg,rgba(245,166,35,.12) 0%,transparent 60%);pointer-events:none;}
+.mod-info{display:flex;flex-direction:column;justify-content:center;}
+.mod-tag{display:inline-block;padding:4px 12px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.25);border-radius:4px;font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;letter-spacing:1px;margin-bottom:18px;width:fit-content;}
+.mod-t{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;margin-bottom:14px;letter-spacing:1px;}
+.mod-d{font-size:15px;color:var(--muted2);line-height:1.8;font-weight:300;margin-bottom:22px;}
+.mod-ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.mod-ul li{font-size:13px;color:#aaa;display:flex;align-items:center;gap:10px;}
+.mod-ul li::before{content:'→';color:var(--accent);font-weight:700;flex-shrink:0;}
+
+/* QUOTE */
+.qt-section{padding:80px 48px;background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center;}
+.qt-text{font-size:clamp(19px,3vw,27px);font-weight:300;font-style:italic;color:#ccc;max-width:780px;margin:0 auto 20px;line-height:1.65;}
+.qt-text strong{color:var(--accent);font-style:normal;font-weight:600;}
+.qt-autor{font-size:12px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;}
+
+/* PLANES */
+.pl-section{padding:100px 48px;}
+.pl-inner{max-width:1100px;margin:0 auto;}
+.pl-head{text-align:center;margin-bottom:60px;}
+.pl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.pl{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:34px 24px;position:relative;transition:all .3s;}
+.pl:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 40px rgba(245,166,35,.1);}
+.pl.pop{border-color:var(--accent);background:rgba(245,166,35,.04);}
+.pl-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;font-size:10px;font-weight:800;padding:3px 14px;border-radius:100px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+.pl-name{font-family:'Bebas Neue',sans-serif;font-size:25px;color:var(--accent);letter-spacing:1px;margin-bottom:5px;}
+.pl-price{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:1;margin-bottom:3px;}
+.pl-per{font-size:12px;color:var(--muted);margin-bottom:18px;}
+.pl-dias{font-size:13px;color:var(--muted2);padding:8px 10px;background:var(--bg3);border-radius:6px;text-align:center;margin-bottom:18px;}
+.pl-dias strong{color:var(--text);}
+.pl-ul{list-style:none;margin-bottom:24px;}
+.pl-ul li{font-size:13px;color:var(--muted2);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:8px;}
+.pl-ul li::before{content:'✓';color:var(--green);font-weight:700;font-size:11px;}
+.pl-btn{width:100%;padding:12px;background:var(--accent);color:#000;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:block;text-align:center;transition:all .2s;}
+.pl-btn:hover{background:#e8951f;}
+.pl-btn-o{width:100%;padding:12px;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;display:block;text-align:center;transition:all .2s;}
+.pl-btn-o:hover{border-color:var(--accent);color:var(--accent);}
+
+/* CTA */
+.cta-s{position:relative;overflow:hidden;padding:120px 48px;text-align:center;}
+.cta-bg{position:absolute;inset:0;background-image:url('img-cta.jpg');background-size:cover;background-position:center;filter:brightness(.18);}
+.cta-ov{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(245,166,35,.1) 0%,rgba(10,10,10,.85) 70%);}
+.cta-c{position:relative;z-index:2;}
+.cta-t{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,7vw,80px);letter-spacing:2px;line-height:1;margin-bottom:14px;}
+.cta-t span{color:var(--accent);}
+.cta-s2{font-size:16px;color:#aaa;margin-bottom:44px;font-weight:300;}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:26px 48px;display:flex;align-items:center;justify-content:space-between;}
+.fl{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--muted);}
+.fl span{color:var(--accent);}
+.ft{font-size:12px;color:var(--muted);}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:14px 20px;}
+  .nav-links{display:none;}
+  .hero-c{padding:0 24px 70px;}
+  .pasos-section,.mods-section,.pl-section,.cta-s{padding:60px 24px;}
+  .pasos-grid{grid-template-columns:1fr;}
+  .mod-row{grid-template-columns:1fr;gap:28px;direction:ltr!important;margin-bottom:60px;}
+  .mod-t{font-size:32px;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .stat{border-right:none;border-bottom:1px solid var(--border);}
+  .stat:nth-child(odd){border-right:1px solid var(--border);}
+  .stat:nth-last-child(-n+2){border-bottom:none;}
+  .pl-grid{grid-template-columns:1fr 1fr;}
+  .qt-section{padding:60px 24px;}
+  footer{flex-direction:column;gap:10px;text-align:center;padding:20px 24px;}
+}
+@media(max-width:600px){
+  nav{padding:12px 14px;}
+  .nav-cta{gap:6px;}
+  .btn-ng,.btn-ns{padding:8px 10px;font-size:12px;}
+  .nfull{display:none;}
+  .hero-c{padding:0 16px 60px;}
+  .hero-h1{font-size:clamp(58px,14vw,80px);}
+  .hero-p{font-size:15px;}
+  .hero-btns{flex-direction:column;}
+  .btn-h,.btn-hg{text-align:center;}
+  .pasos-section,.mods-section,.pl-section{padding:48px 16px;}
+  .pl-grid{grid-template-columns:1fr;}
+  .qt-section{padding:48px 16px;}
+  .qt-text{font-size:17px;}
+  .cta-s{padding:64px 16px;}
+  footer{padding:18px 16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Build<span>Core</span></div>
+  <ul class="nav-links">
+    <li><a href="#pasos">Cómo funciona</a></li>
+    <li><a href="#modulos">Módulos</a></li>
+    <li><a href="#planes">Planes</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="buildcore-sistema-seguro-fixed.html" class="btn-ng">Iniciar Sesión</a>
+    <a href="buildcore-sistema-seguro-fixed.html" class="btn-ns"><span class="nfull">Crear cuenta gratis</span><span class="nshort" style="display:none">Registrarse</span></a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-ov"></div>
+  <div class="hero-c">
+    <div class="hero-badge"><b></b>Software para Constructoras · Perú</div>
+    <h1 class="hero-h1">GESTIONA<br><span class="o">TU OBRA.</span></h1>
+    <p class="hero-p">Control total de proyectos, personal, maquinaria y finanzas. Todo en un sistema pensado para constructoras peruanas.</p>
+    <div class="hero-btns">
+      <a href="buildcore-sistema-seguro-fixed.html" class="btn-h">Empezar gratis — 15 días</a>
+      <a href="#modulos" class="btn-hg">Ver qué incluye →</a>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="mq">
+  <div class="mq-t">
+    <span class="mq-i">PROYECTOS</span><span class="mq-i">PERSONAL</span><span class="mq-i">MAQUINARIA</span><span class="mq-i">PRESUPUESTOS</span><span class="mq-i">FACTURACIÓN</span><span class="mq-i">FLUJO DE CAJA</span><span class="mq-i">ASISTENCIA</span><span class="mq-i">REPORTES</span><span class="mq-i">CONTRATOS</span><span class="mq-i">COTIZADOR</span>
+    <span class="mq-i">PROYECTOS</span><span class="mq-i">PERSONAL</span><span class="mq-i">MAQUINARIA</span><span class="mq-i">PRESUPUESTOS</span><span class="mq-i">FACTURACIÓN</span><span class="mq-i">FLUJO DE CAJA</span><span class="mq-i">ASISTENCIA</span><span class="mq-i">REPORTES</span><span class="mq-i">CONTRATOS</span><span class="mq-i">COTIZADOR</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat reveal"><div class="stat-n">15+</div><div class="stat-l">Módulos integrados</div></div>
+  <div class="stat reveal" style="transition-delay:.1s"><div class="stat-n">100%</div><div class="stat-l">En la nube</div></div>
+  <div class="stat reveal" style="transition-delay:.2s"><div class="stat-n">S/99</div><div class="stat-l">Desde al mes</div></div>
+  <div class="stat reveal" style="transition-delay:.3s"><div class="stat-n">15</div><div class="stat-l">Días gratis</div></div>
+</div>
+
+<!-- CÓMO FUNCIONA -->
+<section class="pasos-section" id="pasos">
+  <div class="pasos-inner">
+    <div class="stag">// cómo funciona</div>
+    <h2 class="stit reveal">EN 3 PASOS<br>EMPIEZAS HOY</h2>
+    <p class="ssub reveal">Sin instalaciones ni complicaciones. Tu empresa en el sistema en minutos.</p>
+    <div class="pasos-grid">
+      <div class="paso reveal">
+        <div class="paso-n">01</div>
+        <div class="paso-ic">📝</div>
+        <div class="paso-t">Crea tu cuenta</div>
+        <div class="paso-d">Registra el nombre de tu empresa, email y contraseña. En menos de 2 minutos tienes acceso completo con 15 días de prueba gratis.</div>
+      </div>
+      <div class="paso reveal" style="transition-delay:.1s">
+        <div class="paso-n">02</div>
+        <div class="paso-ic">⚙️</div>
+        <div class="paso-t">Configura tu empresa</div>
+        <div class="paso-d">Agrega tus proyectos, registra tu personal y maquinaria. El sistema se adapta a tu constructora, no al revés.</div>
+      </div>
+      <div class="paso reveal" style="transition-delay:.2s">
+        <div class="paso-n">03</div>
+        <div class="paso-ic">🚀</div>
+        <div class="paso-t">Opera con control total</div>
+        <div class="paso-d">Registra asistencia, genera presupuestos, controla tu caja y obtén reportes en tiempo real desde cualquier dispositivo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MÓDULOS -->
+<section class="mods-section" id="modulos">
+  <div class="mods-inner">
+    <div class="stag">// módulos del sistema</div>
+    <h2 class="stit reveal">TODO LO QUE<br>TU OBRA NECESITA</h2>
+    <p class="ssub reveal">Cada módulo está diseñado para el día a día de una constructora peruana.</p>
+
+    <div class="mod-row reveal">
+      <div class="mod-img">
+        <img src="img-obras.jpg" alt="Obras de construcción" loading="lazy">
+        <div class="mod-img-ov"></div>
+      </div>
+      <div class="mod-info">
+        <span class="mod-tag">PROYECTOS & OBRAS</span>
+        <div class="mod-t">CONTROL DE OBRAS EN TIEMPO REAL</div>
+        <p class="mod-d">Crea y monitorea todas tus obras activas. Visualiza el avance, presupuesto ejecutado, estado y alertas de cada proyecto desde un solo lugar.</p>
+        <ul class="mod-ul">
+          <li>Avance de obra en porcentaje</li>
+          <li>Presupuesto vs ejecutado</li>
+          <li>Diagrama Gantt automático</li>
+          <li>Partes diarios de obra</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mod-row rev reveal">
+      <div class="mod-img">
+        <img src="img-personal.jpg" alt="Personal de construcción" loading="lazy">
+        <div class="mod-img-ov"></div>
+      </div>
+      <div class="mod-info">
+        <span class="mod-tag">PERSONAL & CUADRILLAS</span>
+        <div class="mod-t">GESTIONA TU PLANILLA</div>
+        <p class="mod-d">Registra trabajadores, asigna cuadrillas a cada obra y controla sueldos, adelantos y pagos pendientes. Sin planillas en papel.</p>
+        <ul class="mod-ul">
+          <li>Control de asistencia diaria</li>
+          <li>Pagos y adelantos</li>
+          <li>Ficha de cada trabajador</li>
+          <li>Exportación a Excel</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mod-row reveal">
+      <div class="mod-img">
+        <img src="img-maquinaria.jpg" alt="Maquinaria pesada excavadora" loading="lazy">
+        <div class="mod-img-ov"></div>
+      </div>
+      <div class="mod-info">
+        <span class="mod-tag">PARQUE DE MAQUINARIA</span>
+        <div class="mod-t">TUS EQUIPOS BAJO CONTROL</div>
+        <p class="mod-d">Registra cada equipo, controla combustible, horas de trabajo y programa mantenimientos. Calcula la rentabilidad de cada máquina.</p>
+        <ul class="mod-ul">
+          <li>Historial de uso por equipo</li>
+          <li>Control de combustible</li>
+          <li>Mantenimientos programados</li>
+          <li>Rentabilidad por equipo</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mod-row rev reveal">
+      <div class="mod-img">
+        <img src="img-finanzas.jpg" alt="Control financiero y flujo de caja" loading="lazy">
+        <div class="mod-img-ov"></div>
+      </div>
+      <div class="mod-info">
+        <span class="mod-tag">FINANZAS & CAJA</span>
+        <div class="mod-t">TUS NÚMEROS SIEMPRE CLAROS</div>
+        <p class="mod-d">Flujo de caja por proyecto, facturación, cotizaciones en PDF y presupuestos detallados. Toma decisiones con datos reales.</p>
+        <ul class="mod-ul">
+          <li>Flujo de caja mensual</li>
+          <li>Cotizaciones y presupuestos PDF</li>
+          <li>Facturación automática</li>
+          <li>Reportes y analítica</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="qt-section">
+  <p class="qt-text reveal">"Antes manejaba todo en cuadernos y Excel. Con BuildCore <strong>sé exactamente cuánto gano por obra</strong>, cuánto combustible gasté y si voy a tiempo."</p>
+  <div class="qt-autor reveal">Constructor · Cliente BuildCore</div>
+</section>
+
+<!-- PLANES -->
+<section class="pl-section" id="planes">
+  <div class="pl-inner">
+    <div class="pl-head">
+      <div class="stag" style="text-align:center">// elige tu plan</div>
+      <h2 class="stit reveal" style="text-align:center">PLANES & PRECIOS</h2>
+      <p class="ssub reveal" style="margin:0 auto;text-align:center">Todos los planes incluyen acceso completo. Sin funciones bloqueadas.</p>
+    </div>
+    <div class="pl-grid">
+      <div class="pl reveal">
+        <div class="pl-name">Trial</div>
+        <div class="pl-price">Gratis</div>
+        <div class="pl-per">15 días de prueba</div>
+        <div class="pl-dias"><strong>15 días</strong> para probar todo</div>
+        <ul class="pl-ul"><li>Todos los módulos</li><li>Sin tarjeta de crédito</li><li>Soporte por WhatsApp</li></ul>
+        <a href="buildcore-sistema-seguro-fixed.html" class="pl-btn-o">Empezar gratis</a>
+      </div>
+      <div class="pl reveal" style="transition-delay:.08s">
+        <div class="pl-name">Básico</div>
+        <div class="pl-price">S/99</div>
+        <div class="pl-per">por mes</div>
+        <div class="pl-dias"><strong>30 días</strong> de acceso</div>
+        <ul class="pl-ul"><li>Todos los módulos</li><li>Excel/PDF</li><li>Soporte WhatsApp</li></ul>
+        <a href="buildcore-sistema-seguro-fixed.html" class="pl-btn">Contratar</a>
+      </div>
+      <div class="pl pop reveal" style="transition-delay:.16s">
+        <div class="pl-badge">MÁS POPULAR</div>
+        <div class="pl-name">Estándar</div>
+        <div class="pl-price">S/249</div>
+        <div class="pl-per">trimestre · S/83/mes</div>
+        <div class="pl-dias"><strong>90 días</strong> · Ahorro 16%</div>
+        <ul class="pl-ul"><li>Todos los módulos</li><li>Excel/PDF</li><li>Soporte prioritario</li></ul>
+        <a href="buildcore-sistema-seguro-fixed.html" class="pl-btn">Contratar</a>
+      </div>
+      <div class="pl reveal" style="transition-delay:.24s">
+        <div class="pl-name">Premium</div>
+        <div class="pl-price">S/799</div>
+        <div class="pl-per">año · S/67/mes</div>
+        <div class="pl-dias"><strong>365 días</strong> · Mejor precio</div>
+        <ul class="pl-ul"><li>Todos los módulos</li><li>Excel/PDF</li><li>Soporte 24/7</li></ul>
+        <a href="buildcore-sistema-seguro-fixed.html" class="pl-btn">Contratar</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-s">
+  <div class="cta-bg"></div>
+  <div class="cta-ov"></div>
+  <div class="cta-c">
+    <div class="stag">// empieza hoy</div>
+    <h2 class="cta-t reveal">¿LISTO PARA<br><span>TOMAR EL CONTROL?</span></h2>
+    <p class="cta-s2 reveal">Crea tu cuenta en 2 minutos. Sin tarjeta de crédito.</p>
+    <div class="cta-btns reveal">
+      <a href="buildcore-sistema-seguro-fixed.html" style="
+        display:inline-flex;align-items:center;gap:10px;
+        padding:18px 42px;background:var(--accent);color:#000;
+        font-family:'DM Sans',sans-serif;font-size:15px;font-weight:800;
+        border-radius:100px;text-decoration:none;letter-spacing:.3px;
+        box-shadow:0 0 40px rgba(245,166,35,.4);
+        transition:all .25s;">
+        🚀 Crear cuenta gratis
+      </a>
+    </div>
+    <div style="margin-top:32px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
+      <a href="https://wa.me/51975561764?text=Hola,%20quiero%20información%20sobre%20BuildCore" target="_blank" style="
+        display:inline-flex;align-items:center;gap:8px;
+        padding:12px 24px;
+        background:rgba(37,211,102,.1);
+        border:1px solid rgba(37,211,102,.3);
+        border-radius:100px;
+        color:#25d366;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;
+        text-decoration:none;transition:all .25s;"
+        onmouseover="this.style.background='rgba(37,211,102,.2)'"
+        onmouseout="this.style.background='rgba(37,211,102,.1)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <a href="mailto:justweb8@gmail.com" style="
+        display:inline-flex;align-items:center;gap:8px;
+        padding:12px 24px;
+        background:rgba(255,255,255,.06);
+        border:1px solid rgba(255,255,255,.12);
+        border-radius:100px;
+        color:#aaa;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+        text-decoration:none;transition:all .25s;"
+        onmouseover="this.style.borderColor='rgba(245,166,35,.4)';this.style.color='#f5a623'"
+        onmouseout="this.style.borderColor='rgba(255,255,255,.12)';this.style.color='#aaa'">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        Correo electrónico
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fl">Build<span>Core</span></div>
+  <div class="ft">© 2026 NorConstructores · Sistema de Gestión para Constructoras</div>
+  <div class="ft">Desarrollado en Perú 🇵🇪</div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold:0.08, rootMargin:'0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+if(window.innerWidth <= 600){
+  document.querySelectorAll('.nfull').forEach(el => el.style.display='none');
+  document.querySelectorAll('.nshort').forEach(el => el.style.display='inline');
+}
+</script>
+</body>
+</html>
